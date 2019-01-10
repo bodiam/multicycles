@@ -4,11 +4,45 @@
 
 [Multicycles.org](http://multicycles.org) aggregates on one map, different "free-floating" bike rental services.
 
-Currently support:
+See [API](https://developer.multicycles.org/) for the API endpoint.
 
-* [gobee.bike](http://gobee.bike) -> [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/gobee.bike.svg)](https://www.npmjs.com/package/@multicycles/gobee.bike)
-* [Ofo](https://www.ofo.com) -> [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/ofo.svg)](https://www.npmjs.com/package/@multicycles/ofo)
-* [Mobike](https://mobike.com/global/) -> [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/mobike.svg)](https://www.npmjs.com/package/@multicycles/mobike)
-* [Yobike](https://yobike.co.uk) -> [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/yobike.svg)](https://www.npmjs.com/package/@multicycles/yobike)
-* [Jump](https://jumpbikes.com) -> [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/jump.svg)](https://www.npmjs.com/package/@multicycles/jump)
-* Want to add one ? [https://en.wikipedia.org/wiki/List_of_bicycle-sharing_systems](https://en.wikipedia.org/wiki/List_of_bicycle-sharing_systems)
+## Supported Providers
+
+|                                                                                                                                                        |                                                                                                                                                        |                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/bird.svg?label=Bird)](https://www.npmjs.com/package/@multicycles/bird)                      | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/hellobike.svg?label=Hellobike)](https://www.npmjs.com/package/@multicycles/hellobike)       | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/ofo.svg?label=Ofo)](https://www.npmjs.com/package/@multicycles/ofo)                      |
+| [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/byke.svg?label=Byke)](https://www.npmjs.com/package/@multicycles/byke)                      | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/indigowheel.svg?label=IndigoWheel)](https://www.npmjs.com/package/@multicycles/indigowheel) | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/pony.svg?label=Pony)](https://www.npmjs.com/package/@multicycles/pony)                   |
+| [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/callabike.svg?label=Call%20a%20Bike)](https://www.npmjs.com/package/@multicycles/callabike) | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/jump.svg?label=Jump)](https://www.npmjs.com/package/@multicycles/jump)                      | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/spin.svg?label=Spin)](https://www.npmjs.com/package/@multicycles/spin)                   |
+| [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/cityscoot.svg?label=Cityscoot)](https://www.npmjs.com/package/@multicycles/cityscoot)       | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/lime.svg?label=Lime)](https://www.npmjs.com/package/@multicycles/lime)                      | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/whitebikes.svg?label=WhiteBikes)](https://www.npmjs.com/package/@multicycles/whitebikes) |
+| [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/coup.svg?label=Coup)](https://www.npmjs.com/package/@multicycles/coup)                      | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/mobike.svg?label=Mobike)](https://www.npmjs.com/package/@multicycles/mobike)                | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/wind.svg?label=Wind)](https://www.npmjs.com/package/@multicycles/wind)                   |
+| [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/donkey.svg?label=Donkey%20Republic)](https://www.npmjs.com/package/@multicycles/donkey)     | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/nextbike.svg?label=Nextbike)](https://www.npmjs.com/package/@multicycles/nextbike)          | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/yobike.svg?label=Yobike)](https://www.npmjs.com/package/@multicycles/yobike)             |
+| [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/gobee.bike.svg?label=Gobee.bike)](https://www.npmjs.com/package/@multicycles/gobee.bike)    | [![npm (scoped)](https://img.shields.io/npm/v/@multicycles/obike.svg?label=Obike)](https://www.npmjs.com/package/@multicycles/obike)                   |                                                                                                                                                     |
+
+Want to add one ? [https://en.wikipedia.org/wiki/List_of_bicycle-sharing_systems](https://en.wikipedia.org/wiki/List_of_bicycle-sharing_systems)
+Or submit an [Issue](https://github.com/PierrickP/multicycles/issues/new)
+
+## Contribute
+
+### Setup
+
+`git clone https://github.com/PierrickP/multicycles && cd multicycles`
+run `npm i`
+
+### Create a new provider
+
+Run `npm run generate`
+
+### Run services
+
+Set `{developer}/.env` files
+Use `npm run dev:SERVICE` with SERVICE as `front` / `developer`
+
+## Contact
+
+Email: contact@multicycles.org
+Twitter: https://twitter.com/multicyclesOrg
+
+## Sponsors
+
+[![Realtime application protection](https://s3-eu-west-1.amazonaws.com/sqreen-assets/badges/20171107/sqreen-light-badge.svg)](https://www.sqreen.io/?utm_source=badge)
+[![Sentry](https://developer.multicycles.org/sentry-logo-black.png)](https://sentry.io)

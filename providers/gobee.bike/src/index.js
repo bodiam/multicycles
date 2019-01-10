@@ -1,22 +1,46 @@
-import axios from 'axios'
+import got from 'got'
 
 const BASE_URL = 'https://appaws.gobee.bike/GobeeBike/bikes'
-const api = axios.create({
-  baseURL: BASE_URL,
-  timeout: 2000
-})
 
-export default {
-  getBicyclesByLatLng({ lat, lng } = {}) {
+class GobeeBike {
+  constructor({ timeout } = {}) {
+    this.config = {
+      timeout: timeout && parseInt(timeout, 10)
+    }
+  }
+
+  static getProviderDetails() {
+    return {
+      name: 'GoBee Bike',
+      slug: 'gobeebike',
+      website: 'http://gobee.bike/',
+      discountCode: null,
+      app: {
+        android: 'https://play.google.com/store/apps/details?id=com.pgt.gobeebike',
+        ios: 'https://itunes.apple.com/app/id1230842750'
+      },
+      deepLink: {
+        android: null,
+        ios: null
+      }
+    }
+  }
+
+  getBicyclesByLatLng({ lat, lng } = {}, config = {}) {
     if (!lat || !lng) {
       throw new Error('Missing lat/lng')
     }
 
-    return api.get('/near_bikes', {
-      params: {
+    return got.get(`${BASE_URL}/near_bikes`, {
+      json: true,
+      query: {
         lat,
         lng
-      }
+      },
+      timeout: this.config.timeout,
+      ...config
     })
   }
 }
+
+export default GobeeBike

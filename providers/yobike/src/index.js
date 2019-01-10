@@ -1,12 +1,7 @@
 import crypto from 'crypto'
-import querystring from 'querystring'
-import axios from 'axios'
+import got from 'got'
 
 const BASE_URL = 'https://en.api.ohbike.com'
-const api = axios.create({
-  baseURL: BASE_URL,
-  timeout: 2000
-})
 
 function sign(a) {
   var c = [],
@@ -33,8 +28,32 @@ function boundsFromLatLng(lat, lng) {
   return `${latMin},${lngMin};${latMax},${lngMax}`
 }
 
-export default {
-  getBicyclesByLatLng({ lat, lng } = {}) {
+class Yobike {
+  constructor({ timeout, appKey } = {}) {
+    this.appKey = appKey || 'WWTaJQrg-NHe_Zl0iwghHyYypYw6g-6GEZHPGBBF6TI7OzZWo9VVLXWRs2ngQJ18'
+    this.config = {
+      timeout: timeout && parseInt(timeout, 10)
+    }
+  }
+
+  static getProviderDetails() {
+    return {
+      name: 'Yobike',
+      slug: 'yobike',
+      website: 'https://yobike.com/',
+      discountCode: null,
+      app: {
+        android: 'https://play.google.com/store/apps/details?id=com.gesila.yobike',
+        ios: 'https://itunes.apple.com/app/id1207509504'
+      },
+      deepLink: {
+        android: null,
+        ios: null
+      }
+    }
+  }
+
+  getObjects({ lat, lng } = {}, config = {}) {
     if (!lat || !lng) {
       throw new Error('Missing lat/lng')
     }
@@ -46,17 +65,22 @@ export default {
       coord_type: 1,
       t: 'geonear',
       ts: +new Date() / 1000,
-      ak: 'WWTaJQrg-NHe_Zl0iwghHyYypYw6g-6GEZHPGBBF6TI7OzZWo9VVLXWRs2ngQJ18',
+      ak: this.appKey,
       bounds: boundsFromLatLng(lat, lng),
       zoom: '11.000000'
     }
 
-    return api.post(
-      '/v1/vehicle/',
-      querystring.stringify({
+    return got.post(`${BASE_URL}/v1/vehicle/`, {
+      json: true,
+      form: true,
+      body: {
         ...data,
         sign: sign(data)
-      })
-    )
+      },
+      timeout: this.config.timeout,
+      ...config
+    })
   }
 }
+
+export default Yobike

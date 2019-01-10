@@ -1,4 +1,4 @@
-import axios from 'axios'
+import got from 'got'
 import getZone from './zones'
 
 const endpoints = {
@@ -6,17 +6,36 @@ const endpoints = {
   sf: 'https://sf.jumpmobility.com/opendata'
 }
 
-const api = axios.create({
-  timeout: 2000
-})
-
 function getEndpoint(lat, lng) {
   const zone = getZone(lat, lng)
   return zone ? endpoints[zone] : null
 }
 
-export default {
-  getBicyclesByLatLng({ lat, lng } = {}) {
+class Jump {
+  constructor({ timeout } = {}) {
+    this.config = {
+      timeout: timeout && parseInt(timeout, 10)
+    }
+  }
+
+  static getProviderDetails() {
+    return {
+      name: 'Jump',
+      slug: 'jump',
+      website: 'https://jumpbikes.com/',
+      discountCode: null,
+      app: {
+        android: 'https://play.google.com/store/apps/details?id=com.jumpmobility',
+        ios: 'https://itunes.apple.com/app/id1251322970'
+      },
+      deepLink: {
+        android: 'jump://',
+        ios: 'jump://'
+      }
+    }
+  }
+
+  getObjects({ lat, lng } = {}, config = {}) {
     if (!lat || !lng) {
       throw new Error('Missing lat/lng')
     }
@@ -25,7 +44,8 @@ export default {
 
     if (!endpoint) {
       return Promise.resolve({
-        data: {
+        statusCode: 200,
+        body: {
           last_updated: +new Date(),
           ttl: 60,
           data: {
@@ -35,6 +55,12 @@ export default {
       })
     }
 
-    return api.get(`${endpoint}/free_bike_status.json`)
+    return got.get(`${endpoint}/free_bike_status.json`, {
+      json: true,
+      timeout: this.config.timeout,
+      ...config
+    })
   }
 }
+
+export default Jump

@@ -1,55 +1,58 @@
 <template>
-  <div class="wrapper">
-    <settings-panel />
-    <header>
-      <img src="/static/bicyclist.svg" alt="mutlicycles logo" style="height: 30px">
-      &nbsp;
-      <router-link to="/">
-        Multicycles
-      </router-link>
-      &nbsp;|&nbsp;
-      <router-link to="/about">
-        {{ $t('about.title') }}
-      </router-link>
-
-      <a @click="toggleSettingPanel" class="settings"><i data-feather="settings"></i></a>
-
-    </header>
-    <router-view/>
-  </div>
+  <vue-drawer-layout
+    ref="drawerLayout"
+    :enable="drawerEnable"
+    @slide-end="fixEnable"
+    @mask-click="handleMaskClick"
+  >
+    <drawer-menu slot="drawer"/>
+    <div slot="content" class="wrapper">
+      <navigation>
+        <router-view></router-view>
+      </navigation>
+    </div>
+  </vue-drawer-layout>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import feather from 'feather-icons'
-
-import settingsPanel from './components/SettingsPanel'
+import { mapActions, mapGetters } from 'vuex'
+import DrawerMenu from './components/DrawerMenu'
 
 export default {
   name: 'app',
   components: {
-    settingsPanel
+    DrawerMenu
   },
-  mounted() {
-    feather.replace()
+  computed: mapGetters(['drawerEnable']),
+  created() {
+    this.getProviders()
   },
-  methods: mapActions(['toggleSettingPanel'])
+  methods: {
+    ...mapActions(['getProviders', 'setDrawerEnable']),
+    fixEnable(visible) {
+      // if drawer closed and still on map, disable it
+      if (this.$route.path === '/' && !visible) {
+        this.setDrawerEnable(false)
+      }
+    },
+    handleMaskClick() {
+      this.$refs.drawerLayout.toggle(false)
+    }
+  }
 }
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css?family=Poppins');
-@import '../node_modules/knacss/sass/knacss.scss';
-
-$mainColor: rgb(18, 168, 11);
+@import './app.scss';
 
 html,
 body {
   font-family: 'Poppins', sans-serif;
   height: 100%;
+  overflow: hidden;
 }
 
-header {
+.header {
   height: 45px;
   display: flex;
   align-items: center;
@@ -57,7 +60,7 @@ header {
   background-color: $mainColor;
   color: #fff;
   font-weight: bold;
-  font-size: 1.3em;
+  font-size: 1.3rem;
 
   a {
     text-decoration: none;
@@ -77,12 +80,5 @@ header {
   justify-content: flex-start;
   align-content: flex-start;
   align-items: stretch;
-}
-
-.settings {
-  z-index: 10001;
-  position: absolute;
-  right: 10px;
-  line-height: 1;
 }
 </style>

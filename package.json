@@ -6,42 +6,34 @@
     "#<git hooks>": "handled by husky",
     "precommit": "lint-staged",
     "#</git hooks>": "handled by husky",
-    "clean": "rm -rf packages/*/lib",
-    "transpile": "lerna exec -- babel src --optional runtime --out-dir lib --ignore \"__tests__\"",
-    "posttranspile": "lerna run prepare",
-    "watch": "lerna exec --parallel -- babel -w src --optional runtime --out-dir lib --ignore \"__tests__\"",
+    "clean": "rm -rf providers/*/lib",
+    "transpile": "lerna exec --ignore '@multicycles/{front,developer}' -- babel --root-mode upward src --optional runtime --out-dir lib --ignore \"__tests__\"",
+    "watch": "lerna exec --ignore '@multicycles/{front,developer}' --parallel -- babel -w src --optional runtime --out-dir lib --ignore \"__tests__\"",
     "prepare": "npm run clean && npm run transpile",
-    "prerelease": "npm run prepare",
-    "release": "lerna publish",
-    "links": "lerna exec -- npm link",
-    "test": "echo \"Error: pas de tests pour l'instant\" && exit 0"
+    "test": "lerna run --parallel test",
+    "generate": "plop",
+    "dev:front": "cd front && npm run dev",
+    "dev:developer": "cd developer && HOST=0.0.0.0 PORT=8081 npm run dev"
   },
   "lint-staged": {
-    "*.{js,json,css,md}": ["prettier --write", "git add"]
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.36",
-    "@babel/core": "7.0.0-beta.36",
-    "@babel/preset-env": "^7.0.0-beta.36",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.1.6",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "eslint-plugin-prettier": "^2.4.0",
+    "eslint-plugin-prettier": "^2.7.0",
     "husky": "^0.14.3",
-    "lerna": "^2.5.1",
-    "lint-staged": "^6.0.0",
-    "prettier": "^1.9.2"
+    "lerna": "^2.11.0",
+    "lint-staged": "^6.1.1",
+    "plop": "^2.1.0",
+    "prettier": "^1.15.2"
   },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "node": "8"
-          }
-        }
-      ]
-    ],
-    "plugins": ["add-module-exports", "transform-object-rest-spread"]
-  }
+  "dependencies": {}
 }

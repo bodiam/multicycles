@@ -1,33 +1,95 @@
-const firebase = require('firebase')
+import crypto from 'crypto'
+import got from 'got'
 
-// https://pony-bikes-f8cf9.firebaseio.com
-firebase.initializeApp({
-  databaseURL: 'https://turing-emitter-148803.firebaseio.com'
-})
+const BASE_URL = 'https://mobile.o.bike/api/v2'
 
-var database = firebase.database()
+const APP_VERSION = '3.2.4'
+const SHA1KEY = 'oBiOSX4buhBMG'
 
-console.log(require('util').inspect(database, { depth: null, colors: true }))
+function sha1(input) {
+  return crypto
+    .createHash('sha1')
+    .update(input)
+    .digest('hex')
+}
 
-database
-  .ref('/bikes')
-  .once('value')
-  .then(snapshot => {
-    console.log(snapshot.val())
-  })
-  .catch(console.error)
+function encodeBody({ lat, lng }) {
+  const data = {
+    countryCode: '33',
+    longitude: lng,
+    latitude: lat
+  }
 
-// const BASE_URL = 'http://aws.gobee.bike/GobeeBike/bikes'
-// const api = axios.create({
-//   baseURL: BASE_URL
-// })
+  const versionWithoutDots = APP_VERSION.replace(/\./g, '')
 
-// export default {
-//   getBicyclesByLatLng({ lat, lng } = {}) {
-//     if (!lat || !lng) {
-//       throw new Error('Missing lat/lng')
-//     }
+  let jsonData = JSON.stringify(data).replace(/\s/g, '')
+  let sha1Data = jsonData + '&' + SHA1KEY + versionWithoutDots
+  let cryptData = jsonData + '&' + sha1(sha1Data)
 
-//     return Promise.resolve([])
-//   }
-// }
+  const KEY = 'oBiOSMYFUzLed' + versionWithoutDots
+  const IV = '1234567890123456'
+
+  let cipher = crypto.createCipheriv('aes128', KEY, IV)
+  let encrypted = cipher.update(cryptData, 'utf8', 'hex')
+  encrypted += cipher.final('hex')
+
+  return { value: encrypted }
+}
+
+class Obike {
+  constructor({ timeout } = {}) {
+    this.config = {
+      baseURL: BASE_URL,
+      timeout: timeout && parseInt(timeout, 10),
+      headers: {
+        version: APP_VERSION,
+        platform: 'iOS',
+        'Content-Type': 'application/json'
+      }
+    }
+  }
+
+  static getProviderDetails() {
+    return {
+      name: 'Obike',
+      slug: 'obike',
+      website: 'https://www.o.bike',
+      discountCode: null,
+      app: {
+        android: 'https://play.google.com/store/apps/details?id=com.obike',
+        ios: 'https://itunes.apple.com/app/obike/id1184154041'
+      },
+      deepLink: {
+        android: null,
+        ios: null
+      }
+    }
+  }
+
+  getObjects({ lat, lng } = {}, config = {}) {
+    if (!lat || !lng) {
+      throw new Error('Missing lat/lng')
+    }
+
+    return got
+      .post(`${this.config.baseURL}/bike/list`, {
+        json: true,
+        headers: this.config.headers,
+        body: encodeBody({
+          lat,
+          lng
+        }),
+        timeout: this.config.timeout,
+        ...config
+      })
+      .then(resp => {
+        if (!resp.body.success) {
+          throw new Error('Provider error', resp)
+        } else {
+          return resp
+        }
+      })
+  }
+}
+
+export default Obike
